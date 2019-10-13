@@ -2,22 +2,21 @@ const Node = require('./node');
 
 class LinkedList {
     constructor() {
-        this._head = null
-        this._tail = null
+        this._head  = new Node()
+        this._tail  = new Node()
         this.length = 0
     }
 
     append(data) {
-        let node = new Node(data)
-
         if (this.length === 0) {
+            let node = new Node(data)
+
             this._head = node
             this._tail = node
         } else {
-            let tail = this._tail
+            let node = new Node(data, this._tail)
 
-            node.prev = tail
-            tail.next = node
+            this._tail.next = node
             this._tail = node
         }
 
@@ -37,7 +36,7 @@ class LinkedList {
     at(index) {
         let item = this._head
 
-        for (let i = 1; i <= index; i++) {
+        for (let i = 0; i < index; i++) {
             item = item.next
         }
 
@@ -45,23 +44,20 @@ class LinkedList {
     }
 
     insertAt(index, data) {
-        let item = this._head
+        if (this.length === 0) {
+            this.append(data)
+        } else {
+            let node = this._head
 
-        for (let i = 0; i <= index; i++) {
-            if (index === i) {
-                let prev = item.prev
-                let node = new Node(data)
-
-                if (this.length > 1) {
-                    node.prev = prev
-                    node.next = item
-                    prev.next = node
-                }
-
-                this.length++
+            for (let i = 0; i < index; i++) {
+                node = node.next
             }
 
-            item = item.next
+            let newNode = new Node(data, node.prev, node)
+
+            node.prev.next = newNode
+            node.prev = newNode
+            this.length++
         }
 
         return this
@@ -80,39 +76,34 @@ class LinkedList {
     }
 
     deleteAt(index) {
-        let item = this._head
+        if (this.length === 1) {
+            this._head = new Node()
+            this._tail = new Node()
+        } else {
+            let node = this._head
 
-        for (let i = 0; i <= index; i++) {
-            if (index === i) {
-                let prev = item.prev
-                let next = item.next
-
-                if (this.length > 1) {
-                    item.prev.next = next
-                    item.next.prev = prev
-                }
-
-                this.length--
-
-                return this
+            for (let i = 0; i < index; i++) {
+                node = node.next
             }
 
-            item = item.next
+            node.prev.next = node.next
+            node.next.prev = node.pev
+            this.length--
+
         }
 
         return this
     }
 
     reverse() {
-        let item = this._head
-        let next = item.next
+        let node = this._head
 
         for (let i = 0; i < this.length; i++) {
-            next = item.next
-            item.next = item.prev
-            item.prev = next
+            let next = node.next
+            node.next = node.prev
+            node.prev = next
 
-            item = next
+            node = next
         }
 
         let head = this._head
